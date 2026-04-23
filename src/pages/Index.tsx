@@ -7,6 +7,11 @@ import { ChatPanel } from "@/components/ChatPanel";
 import { Simulator } from "@/components/Simulator";
 import { WaterGraph } from "@/components/WaterGraph";
 
+
+if ("scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
+
 // type History = Reading[];
 
 
@@ -98,7 +103,10 @@ const Index = () => {
 
 
   useEffect(() => {
-  window.scrollTo(0, 0);
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
 }, []);
   // const [history, setHistory] = useState<History>([]);
 
