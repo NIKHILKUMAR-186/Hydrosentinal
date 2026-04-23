@@ -97,6 +97,9 @@ const Index = () => {
   const [simulatorRunning, setSimulatorRunning] = useState(true);
 
 
+  useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
   // const [history, setHistory] = useState<History>([]);
 
   const graphData = history.map((item, i) => ({
