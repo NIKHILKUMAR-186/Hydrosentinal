@@ -238,6 +238,12 @@ const Index = () => {
     });
   }, []);
 
+  useEffect(() => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+}, []);
   // const [history, setHistory] = useState<History>([]);
 
   const graphData = history.map((item, i) => ({
