@@ -6,34 +6,162 @@ import { StatusBanner } from "@/components/StatusBanner";
 import { ChatPanel } from "@/components/ChatPanel";
 import { Simulator } from "@/components/Simulator";
 import { WaterGraph } from "@/components/WaterGraph";
+import { motion } from "framer-motion";
 
+<section className="relative text-center py-20 overflow-hidden">
+  {/* 🔥 Background Glow */}
+  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-blue-500/10 to-green-500/10 blur-3xl animate-pulse" />
 
-if ("scrollRestoration" in history) {
-  history.scrollRestoration = "manual";
-}
+  {/* 💧 Floating Circle */}
+  <motion.div
+    className="absolute w-72 h-72 bg-cyan-400/20 rounded-full blur-3xl"
+    animate={{ y: [0, -30, 0] }}
+    transition={{ repeat: Infinity, duration: 6 }}
+    style={{ top: "10%", left: "20%" }}
+  />
 
-// type History = Reading[];
+  {/* 💧 Floating Circle 2 */}
+  <motion.div
+    className="absolute w-72 h-72 bg-green-400/20 rounded-full blur-3xl"
+    animate={{ y: [0, 30, 0] }}
+    transition={{ repeat: Infinity, duration: 7 }}
+    style={{ bottom: "10%", right: "20%" }}
+  />
 
+  {/* 🚀 MAIN CONTENT */}
+  <div className="relative z-10">
+    {/* 🧠 TITLE */}
+    <motion.h1
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      className="text-4xl md:text-6xl font-bold text-white"
+    >
+      💧 HydroSentinel
+    </motion.h1>
+
+    {/* 📊 SUBTITLE */}
+    <motion.p
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3, duration: 0.8 }}
+      className="mt-4 text-lg text-gray-300 max-w-xl mx-auto"
+    >
+      Real-time AI-powered water quality monitoring system for safer communities
+    </motion.p>
+
+    <div
+      className=" px-7 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-green-500 text-white font-medium shadow-lg transition-all uration-300 hover:shadow-2xl
+"
+    >
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => {
+          document
+            .getElementById("team")
+            ?.scrollIntoView({ behavior: "smooth" });
+        }}
+        className="px-5 py-2 rounded-xl bg-cyan-500 text-white shadow"
+      >
+        👨‍💻 Team
+      </motion.button>
+
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => {
+          document
+            .getElementById("project")
+            ?.scrollIntoView({ behavior: "smooth" });
+        }}
+        className="px-5 py-2 rounded-xl bg-blue-500 text-white shadow"
+      >
+        📄 Project
+      </motion.button>
+
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => {
+          document
+            .getElementById("prototype")
+            ?.scrollIntoView({ behavior: "smooth" });
+        }}
+        className="px-5 py-2 rounded-xl bg-green-500 text-white shadow"
+      >
+        ⚙️ Prototype
+      </motion.button>
+    </div>
+  </div>
+  <div className="mt-6 flex flex-wrap justify-center gap-4"></div>
+</section>;
 
 const FEATURES = [
   {
     title: "Real-time Monitoring",
-    desc: "Continuously tracks water parameters using IoT sensors.",
+    short: "Live sensor data updates",
+    detail: "Continuously tracks pH, TDS, and turbidity using IoT sensors.",
+    icon: "📡",
   },
   {
     title: "AI Insights",
-    desc: "Analyzes data and gives intelligent suggestions.",
+    short: "Smart water analysis",
+    detail: "AI analyzes data and gives intelligent suggestions.",
+    icon: "🤖",
   },
   {
     title: "Smart Alerts",
-    desc: "Instant alerts when water becomes unsafe.",
+    short: "Instant unsafe warning",
+    detail: "Instant alerts when water becomes unsafe.",
+    icon: "⚠️",
   },
   {
     title: "Prediction",
-    desc: "Predicts future water safety using trends.",
+    short: "Future risk detection",
+    detail: "Predicts future water safety using trends.",
+    icon: "📊",
   },
 ];
 
+const getFeatureExplanation = (title: string) => {
+  switch (title) {
+    case "Real-time Monitoring":
+      return [
+        "Sensors (pH, TDS, turbidity) water se data collect karte hain",
+        "ESP32 us data ko process karta hai",
+        "Data cloud (Supabase) me send hota hai",
+        "Dashboard pe har 3 second me update hota hai",
+      ];
+
+    case "AI Insights":
+      return [
+        "Collected data AI model ko diya jata hai",
+        "AI safe/unsafe detect karta hai",
+        "User ko simple language me explanation deta hai",
+        "User AI se questions bhi puch sakta hai",
+      ];
+
+    case "Smart Alerts":
+      return [
+        "System continuously water values check karta hai",
+        "Agar threshold cross hota hai → alert trigger hota hai",
+        "UI me red warning dikhta hai",
+        "Audio alert bhi play hota hai",
+      ];
+
+    case "Prediction":
+      return [
+        "Past data (history) store hota hai",
+        "Trend analysis kiya jata hai",
+        "Future unsafe condition predict hota hai",
+        "User ko pehle hi warning mil jata hai",
+      ];
+
+    default:
+      return ["No details available"];
+  }
+};
 
 const TEAM = [
   {
@@ -83,7 +211,6 @@ const WATER_QUOTES = [
   "Pure water is priceless",
 ];
 
-
 type Reading = {
   id: string;
   ph: number;
@@ -100,7 +227,16 @@ const Index = () => {
   const [quote, setQuote] = useState(WATER_QUOTES[0]);
   const [selectedMember, setSelectedMember] = useState<any>(null);
   const [simulatorRunning, setSimulatorRunning] = useState(true);
+  const [activeFeature, setActiveFeature] = useState<number | null>(null);
+  const [selectedFeature, setSelectedFeature] = useState<any>(null);
+  const [expandedFeature, setExpandedFeature] = useState<number | null>(null);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, []);
 
   useEffect(() => {
   window.scrollTo({
@@ -131,39 +267,27 @@ const Index = () => {
     if (reading.turbidity > 25) {
       return "❌ Dirty water. Filter before use";
     }
-    
+
     return "⚠️ Limited use. Treat before drinking";
   };
 
-    
-
   useEffect(() => {
-  if (!reading) return;
+    if (!reading) return;
 
-  if (reading.status === "NOT SAFE") {
-    setQuote("⚠️ Water is unsafe. Avoid drinking!");
-  } 
-  else if (reading.turbidity > 25) {
-    setQuote("💧 Water is too cloudy. Filtration needed.");
-  } 
-  else if (reading.tds > 1000) {
-    setQuote("🧂 High TDS detected. Not ideal for drinking.");
-  } 
-  else if (reading.ph < 6.5 || reading.ph > 8.5) {
-    setQuote("⚗️ pH imbalance detected. Check water source.");
-  } 
-  else {
-    setQuote("✅ Water looks safe and healthy!");
-  }
-}, [reading]);
-
-
-
+    if (reading.status === "NOT SAFE") {
+      setQuote("⚠️ Water is unsafe. Avoid drinking!");
+    } else if (reading.turbidity > 25) {
+      setQuote("💧 Water is too cloudy. Filtration needed.");
+    } else if (reading.tds > 1000) {
+      setQuote("🧂 High TDS detected. Not ideal for drinking.");
+    } else if (reading.ph < 6.5 || reading.ph > 8.5) {
+      setQuote("⚗️ pH imbalance detected. Check water source.");
+    } else {
+      setQuote("✅ Water looks safe and healthy!");
+    }
+  }, [reading]);
 
   const fetchLatest = useCallback(async () => {
-
-
-
     const { data, error } = await supabase.functions.invoke("latest");
 
     if (error) {
@@ -172,17 +296,16 @@ const Index = () => {
     }
 
     if (data?.reading) {
-    setReading(data.reading as Reading);
+      setReading(data.reading as Reading);
 
-    setHistory((prev) => {
-      const updated = [...prev, data.reading];
-      return updated.slice(-5);
-    });
-  }
-}, []);
+      setHistory((prev) => {
+        const updated = [...prev, data.reading];
+        return updated.slice(-5);
+      });
+    }
+  }, []);
 
   const alertPlayedRef = useRef(false);
-
 
   useEffect(() => {
     fetchLatest();
@@ -190,7 +313,6 @@ const Index = () => {
     return () => window.clearInterval(id);
   }, [fetchLatest]);
 
-  
   useEffect(() => {
     if (!reading) return;
 
@@ -200,221 +322,415 @@ const Index = () => {
     }
 
     if (!alertPlayedRef.current) {
-      const audio = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
+      const audio = new Audio(
+        "https://actions.google.com/sounds/v1/alarms/beep_short.ogg",
+      );
       audio.play().catch(console.error);
       alertPlayedRef.current = true;
     }
   }, [reading]);
-
 
   const phOut = reading ? reading.ph < 6.5 || reading.ph > 8.5 : false;
   const tdsOut = reading ? reading.tds > 1000 : false;
   const turbOut = reading ? reading.turbidity > 25 : false;
 
   const getPrediction = () => {
-  if (history.length < 2) return null;
+    if (history.length < 2) return null;
 
-  const last = history[history.length - 1];
-  const prev = history[history.length - 2];
+    const last = history[history.length - 1];
+    const prev = history[history.length - 2];
 
-  // turbidity increasing
-  if (last.turbidity > prev.turbidity && last.turbidity > 20) {
-    return "⚠️ Water may become unsafe soon (getting dirty)";
-  }
-  console.log("history:", history);
+    // turbidity increasing
+    if (last.turbidity > prev.turbidity && last.turbidity > 20) {
+      return "⚠️ Water may become unsafe soon (getting dirty)";
+    }
+    console.log("history:", history);
 
-  // TDS increasing
-  if (last.tds > prev.tds && last.tds > 900) {
-    return "⚠️ TDS is increasing. Water may become unsafe";
-  }
+    // TDS increasing
+    if (last.tds > prev.tds && last.tds > 900) {
+      return "⚠️ TDS is increasing. Water may become unsafe";
+    }
 
-  return null;
-};
-
-
-
+    return null;
+  };
 
   return (
     <main className="min-h-screen bg-gradient-hero text-foreground">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Header */}
-        <header className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-primary text-primary-foreground shadow-glow">
-              <Droplets className="h-6 w-6" />
+        <section className="relative text-center py-20 overflow-hidden">
+          {/* 🔥 Background Glow */}
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-blue-500/10 to-green-500/10 blur-3xl animate-pulse" />
+
+          {/* 💧 Floating Circle 1 */}
+          <motion.div
+            className="absolute w-72 h-72 bg-cyan-400/20 rounded-full blur-3xl"
+            animate={{ y: [0, -30, 0] }}
+            transition={{ repeat: Infinity, duration: 6 }}
+            style={{ top: "10%", left: "20%" }}
+          />
+
+          {/* 💧 Floating Circle 2 */}
+          <motion.div
+            className="absolute w-72 h-72 bg-green-400/20 rounded-full blur-3xl"
+            animate={{ y: [0, 30, 0] }}
+            transition={{ repeat: Infinity, duration: 7 }}
+            style={{ bottom: "10%", right: "20%" }}
+          />
+
+          {/* 🚀 CONTENT */}
+          <div className="relative z-10">
+            {/* TITLE */}
+            <motion.h1
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-4xl md:text-6xl font-bold text-white"
+            >
+              💧 HydroSentinel
+            </motion.h1>
+
+            {/* SUBTITLE */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              className="mt-4 text-lg text-gray-300 max-w-xl mx-auto"
+            >
+              Real-time AI-powered water quality monitoring system for safer
+              communities
+            </motion.p>
+
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              whileHover={{
+                scale: 1.11,
+                boxShadow: "0px 0px 25px rgba(34,197,94,0.6)",
+              }}
+              whileTap={{ scale: 0.95 }}
+              transition={{
+                delay: 0.1,
+                duration: 0.5,
+                type: "spring",
+                stiffness: 300,
+              }}
+              onClick={() =>
+                document
+                  .getElementById("team")
+                  ?.scrollIntoView({ behavior: "smooth" })
+              }
+              className="mt-6 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-green-500 text-white font-semibold shadow-lg"
+            >
+              👨‍💻 Team
+            </motion.button>
+
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              whileHover={{
+                scale: 1.1,
+                boxShadow: "0px 0px 25px rgba(34,197,94,0.6)",
+              }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ delay: 0.1, type: "spring", stiffness: 300 }}
+              onClick={() => {
+                document
+                  .getElementById("project")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="mt-6 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-green-500 text-white font-semibold shadow-lg"
+            >
+              📄 Project
+            </motion.button>
+
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{
+                delay: 0.1,
+                duration: 0.5,
+                type: "spring",
+                stiffness: 300,
+              }}
+              whileHover={{
+                scale: 1.1,
+                boxShadow: "0px 0px 25px rgba(34,197,94,0.6)",
+              }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                document
+                  .getElementById("prototype")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="mt-6 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-green-500 text-white font-semibold shadow-lg"
+            >
+              ⚙️ Prototype
+            </motion.button>
+
+            <div className="mt-6 flex flex-wrap justify-center gap-6"></div>
+          </div>
+        </section>
+        {/* === team details === */}
+        <section id="team" className="mt-12">
+          <h2 className="text-xl font-bold mb-4 text-center">👨‍💻 Our Team</h2>
+          <h2 className="text-lg text-primary font-semibold text-center mb-2">
+            🚀 Team HYDROSENTINAL
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {TEAM.map((member, i) => (
+              <div
+                key={i}
+                onClick={() => setSelectedMember(member)}
+                className="  group   relative   rounded-2xl   bg-white/5 backdrop-blur-md   border border-white/10   p-6 text-center   cursor-pointer   transition-all duration-300   hover:-translate-y-2   hover:shadow-[0_10px_40px_rgba(0,255,200,0.2)]   hover:border-cyan-400/40
+  "
+              >
+                <div className="relative w-24 h-24 mx-auto">
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500 to-green-500 blur-md opacity-0 group-hover:opacity-70 transition"></div>
+
+                  <img
+                    src={member.img}
+                    alt={member.name}
+                    className="relative w-24 h-24 rounded-full object-cover border-2 border-white/20"
+                  />
+                </div>
+                <p className="mt-3 inline-block text-xs px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 font-medium">
+                  {member.role}
+                </p>
+                <h3 className="mt-3 text-lg font-semibold text-white">
+                  {member.name}
+                </h3>
+
+                {/* short intro on hover */}
+                <div
+                  className="
+opacity-0 group-hover:opacity-100
+transition duration-300
+mt-3 text-sm text-gray-300
+"
+                >
+                  {member.intro}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {selectedMember && (
+            <div
+              className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
+              onClick={() => setSelectedMember(null)}
+            >
+              <div
+                className="bg-card rounded-2xl p-6 w-[90%] max-w-md text-center relative animate-scale-in"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Close Button */}
+                <button
+                  onClick={() => setSelectedMember(null)}
+                  className="absolute top-2 right-3 text-xl bg-red-500/20 px-2 rounded hover:bg-red-500/40"
+                >
+                  ✖
+                </button>
+
+                {/* Image */}
+                <img
+                  src={selectedMember.img}
+                  className="mx-auto h-28 w-28 rounded-full object-cover border-4 border-primary shadow-lg"
+                />
+
+                {/* Name */}
+                <h2 className="mt-4 text-2xl font-bold tracking-tight">
+                  {selectedMember.name}
+                </h2>
+
+                {/* Role */}
+                <p className="text-sm text-primary font-medium">
+                  {selectedMember.role}
+                </p>
+
+                {/* Intro */}
+                <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+                  {selectedMember.intro}
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight">HydroSentinel</h1>
-              <p className="text-sm text-muted-foreground">Real-time water quality monitoring</p>
+          )}
+        </section>
+
+        <p className="text-center text-sm text-muted-foreground mt-4 max-w-xl mx-auto">
+          We built HydroSentinel to solve real-world water safety issues faced
+          in rural areas. Our mission is to make clean and safe water
+          accessible, understandable, and actionable for everyone using
+          real-time data and AI.
+        </p>
+
+        <section id="project" className="mt-16 text-center">
+          <h2 className="text-2xl font-bold mb-6">🚨 Problem & 💡 Solution</h2>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Problem */}
+            <div className="rounded-xl border border-red-500/40 bg-red-500/10 p-5 text-left">
+              <h3 className="text-lg font-semibold text-red-400 mb-2">
+                🚨 Problem
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Many communities lack real-time access to water quality data.
+                People often consume contaminated water unknowingly, leading to
+                serious health issues. There is no simple system to monitor and
+                understand water safety instantly.
+              </p>
+            </div>
+
+            {/* Solution */}
+            <div className="rounded-xl border border-green-500/40 bg-green-500/10 p-5 text-left">
+              <h3 className="text-lg font-semibold text-green-400 mb-2">
+                💡 Solution
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                HydroSentinel provides real-time monitoring of water quality
+                using IoT sensors. It analyzes parameters like pH, TDS, and
+                turbidity, and gives instant feedback with AI insights. Users
+                can easily understand whether water is safe or not and take
+                necessary actions.
+              </p>
             </div>
           </div>
-          <Simulator onPosted={fetchLatest} onRunningChange={setSimulatorRunning} />
-        </header>
-{/* === team details === */}
-<section className="mt-12">
-  <h2 className="text-xl font-bold mb-4 text-center">👨‍💻 Our Team</h2>
-  <h2 className="text-lg text-primary font-semibold text-center mb-2">
-  🚀 Team HYDROSENTINAL
-</h2>
+        </section>
+        <p className="mt-16 text-center"></p>
 
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-    {TEAM.map((member, i) => (
-      <div
-  key={i}
-  className="rounded-xl border border-border bg-card p-4 text-center shadow-md hover:scale-105 transition cursor-pointer"
-  onClick={() => setSelectedMember(member)}
->
-        <img
-          src={member.img}
-          alt={member.name}
-          className="mx-auto h-24 w-24 rounded-full object-cover border"
-        />
-        <p className="text-sm text-primary font-medium">
-  {member.role}
-</p>
-        <h3 className="mt-3 font-semibold text-lg">{member.name}</h3>
-        {/* <p className="text-sm text-muted-foreground">{member.role}</p> */}
-      </div>
-    ))}
-  </div>
+        <p className="mt-3 font-semibold text-white tracking-wide text-center">
+          ⚡ Key Features
+        </p>
 
+        <div className="grid gap-6 md:grid-cols-2"></div>
 
-{selectedMember && (
-  <div
-  className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
-  onClick={() => setSelectedMember(null)}
->
-    
-    <div
-  className="bg-card rounded-2xl p-6 w-[90%] max-w-md text-center relative animate-scale-in"
-  onClick={(e) => e.stopPropagation()}
-> 
-      {/* Close Button */}
-      <button
-        onClick={() => setSelectedMember(null)}
-        className="absolute top-2 right-3 text-xl bg-red-500/20 px-2 rounded hover:bg-red-500/40"
-      >
-        ✖
-      </button>
+        <div className=" flex flex-col space-y-4 item-center bg-white/5 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)] rounded-2xl p-6">
+          {/* <div className="grid gap-6"> */}
+          {FEATURES.map((feature, i) => (
+            <motion.div
+              key={i}
+              onMouseEnter={() => setActiveFeature(i)}
+              onMouseLeave={() => setActiveFeature(null)}
+              // onClick={() => setSelectedFeature(feature)}
+              onClick={() =>
+                setExpandedFeature(expandedFeature === i ? null : i)
+              }
+              whileHover={{
+                scale: 1.05,
+                y: -4,
+              }}
+              whileTap={{
+                scale: 0.96,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 15,
+              }}
+              className={`
+                
+  group
+  cursor-pointer
+  rounded-2xl
+  bg-white/5 backdrop-blur-md
+  border border-white/10
+  p-5
+  transition-all duration-200 ease-in-out
+hover:shadow-xl
+  flex
 
-      {/* Image */}
-      <img
-        src={selectedMember.img}
-        className="mx-auto h-28 w-28 rounded-full object-cover border-4 border-primary shadow-lg"
-      />
+${
+  expandedFeature === i
+    ? "flex-row items-center justify-center gap-6"
+    : "flex-col items-center text-center"
+}
+`}
+            >
+              <div className="flex flex-col items-center md:items-start w-[140px] shrink-0">
+                <motion.div
+                  animate={
+  expandedFeature === i
+    ? { x: -25}
+    : { x: 0}
+}
+                  transition={{ type: "spring", stiffness: 300  ,damping: 15}}
+                  className="text-3xl mb-2"
+                >
+                  {feature.icon}
+                </motion.div>
 
-      {/* Name */}
-      <h2 className="mt-4 text-2xl font-bold tracking-tight">
-        {selectedMember.name}
-      </h2>
+                <p className="font-semibold text-white">{feature.title}</p>
 
-      {/* Role */}
-      <p className="text-sm text-primary font-medium">
-        {selectedMember.role}
-      </p>
+                <p className="text-xs text-white/60">{feature.short}</p>
+              </div>
 
-      {/* Intro */}
-      <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-  {selectedMember.intro}
-</p>
+              <motion.div
+                className="block"
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+              >
+                {expandedFeature === i && (
+                  <motion.div
+                    initial={{ opacity: 0, x: 60 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4 , ease: "easeOut" }}
+                    className="flex-1 w-full max-w-[600px] text-left bg-white/5 p-3 rounded-xl border border-white/10 shadow-xl backdrop-blur-sm"
+                  >
+                    <p className="text-sm text-gray-300 mb-3">
+                      {feature.detail}
+                    </p>
 
-    </div>
-  </div>
-)}
-</section>
-
-<p className="text-center text-sm text-muted-foreground mt-4 max-w-xl mx-auto">
-  We built HydroSentinel to solve real-world water safety issues faced in rural areas. 
-  Our mission is to make clean and safe water accessible, understandable, and actionable for everyone using real-time data and AI.
-</p>
-        
-
-<section className="mt-16 text-center">
-  <h2 className="text-2xl font-bold mb-6">🚨 Problem & 💡 Solution</h2>
-
-  <div className="grid gap-6 md:grid-cols-2">
-    
-    {/* Problem */}
-    <div className="rounded-xl border border-red-500/40 bg-red-500/10 p-5 text-left">
-      <h3 className="text-lg font-semibold text-red-400 mb-2">🚨 Problem</h3>
-      <p className="text-sm text-muted-foreground">
-        Many communities lack real-time access to water quality data. 
-        People often consume contaminated water unknowingly, leading to serious health issues. 
-        There is no simple system to monitor and understand water safety instantly.
-      </p>
-    </div>
-
-    {/* Solution */}
-    <div className="rounded-xl border border-green-500/40 bg-green-500/10 p-5 text-left">
-      <h3 className="text-lg font-semibold text-green-400 mb-2">💡 Solution</h3>
-      <p className="text-sm text-muted-foreground">
-        HydroSentinel provides real-time monitoring of water quality using IoT sensors. 
-        It analyzes parameters like pH, TDS, and turbidity, and gives instant feedback with AI insights. 
-        Users can easily understand whether water is safe or not and take necessary actions.
-      </p>
-    </div>
-
-  </div>
-</section>
-
-<section className="mt-12 mb-16 text-center">
-  <h2 className="text-2xl font-bold mb-6">⚡ Key Features</h2>
-
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-
-    <div className="rounded-xl border bg-card p-4 hover:scale-105 hover:shadow-lg transition duration-300">
-      📡 <p className="mt-2 font-semibold">Real-time Monitoring</p>
-      <p className="text-xs text-muted-foreground">Live sensor data updates</p>
-    </div>
-
-    <div className="rounded-xl border bg-card p-4 hover:scale-105 hover:shadow-lg transition duration-300">
-      🤖 <p className="mt-2 font-semibold">AI Insights</p>
-      <p className="text-xs text-muted-foreground">Smart water analysis</p>
-    </div>
-
-    <div className="rounded-xl border bg-card p-4 hover:scale-105 hover:shadow-lg transition duration-300">
-      ⚠️ <p className="mt-2 font-semibold">Smart Alerts</p>
-      <p className="text-xs text-muted-foreground">Instant unsafe warning</p>
-    </div>
-
-    <div className="rounded-xl border bg-card p-4 hover:scale-105 hover:shadow-lg transition duration-300">
-      📊 <p className="mt-2 font-semibold">Prediction</p>
-      <p className="text-xs text-muted-foreground">Future risk detection</p>
-    </div>
-
-  </div>
-</section>
-
-
+                    <div className="text-xs text-cyan-300">
+                      ⚙️ How it works:
+                      <ul className="mt-2 space-y-1 text-gray-400">
+                        {getFeatureExplanation(feature.title).map(
+                          (step, idx) => (
+                            <li key={idx}>• {step}</li>
+                          ),
+                        )}
+                      </ul>
+                    </div>
+                  </motion.div>
+                )}
+              </motion.div>
+            </motion.div>
+          ))}
+        </div>
+        <p className="mt-16 text-center"></p>
 
         {/* Status */}
 
-        <StatusBanner status={reading?.status} updatedAt={reading?.created_at} simulatorRunning={simulatorRunning} />
+        <StatusBanner
+          status={reading?.status}
+          updatedAt={reading?.created_at}
+          simulatorRunning={simulatorRunning}
+        />
         {reading?.status === "NOT SAFE" && (
-  <div className="mt-4 rounded-xl bg-red-500/20 border border-red-500 p-4 text-red-300 font-semibold animate-pulse">
-    🚨 Warning: Water is NOT SAFE! Do not drink. Use filtration or boiling.
-  </div>
-)}
-{reading && (
-  (reading.ph < 6.5 ||
-    reading.ph > 8.5 ||
-    reading.tds > 1000 ||
-    reading.turbidity > 25) && (
-    <div className="mt-2 text-sm text-red-400">
-      Reason:
-      {reading.ph < 6.5 || reading.ph > 8.5 ? " pH out of range," : ""}
-      {reading.tds > 1000 ? " high TDS," : ""}
-      {reading.turbidity > 25 ? " dirty water," : ""}
-    </div>
-  )
-)}
-
-
-
+          <div className="mt-4 rounded-xl bg-red-500/20 border border-red-500 p-4 text-red-300 font-semibold animate-pulse">
+            🚨 Warning: Water is NOT SAFE! Do not drink. Use filtration or
+            boiling.
+          </div>
+        )}
+        {reading &&
+          (reading.ph < 6.5 ||
+            reading.ph > 8.5 ||
+            reading.tds > 1000 ||
+            reading.turbidity > 25) && (
+            <div className="mt-2 text-sm text-red-400">
+              Reason:
+              {reading.ph < 6.5 || reading.ph > 8.5 ? " pH out of range," : ""}
+              {reading.tds > 1000 ? " high TDS," : ""}
+              {reading.turbidity > 25 ? " dirty water," : ""}
+            </div>
+          )}
 
         {/* Grid */}
         <div className="mt-6 grid gap-6 lg:grid-cols-3">
-          <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-2">
+          <section
+            id="prototype"
+            className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-2"
+          >
             <SensorCard
               label="pH"
               // value={reading?.ph}
@@ -452,43 +768,44 @@ const Index = () => {
           <aside className="h-[560px] lg:h-auto">
             <ChatPanel />
           </aside>
+        </div>
+        <div className="mt-10 p-6 rounded-2xl bg-card border border-border shadow-lg">
+          <h2 className="text-lg font-semibold mb-2">
+            📊 Water Trends Analysis
+          </h2>
 
+          <WaterGraph data={graphData} />
+          {getPrediction() && (
+            <div className="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-medium animate-pulse">
+              ⚠️ {getPrediction()}
+            </div>
+          )}
 
-</div>
-<div className="mt-10 p-6 rounded-2xl bg-card border border-border shadow-lg">
-  <h2 className="text-lg font-semibold mb-2">📊 Water Trends Analysis</h2>
+          <p className="mt-4 text-sm text-muted-foreground">
+            This graph visualizes real-time trends in water quality parameters
+            like pH, TDS, and turbidity. AI analyzes these trends to detect
+            anomalies and predict potential safety risks before they occur.
+          </p>
+        </div>
 
-  <WaterGraph data={graphData} />
-  {getPrediction() && (
-  <div className="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-medium animate-pulse">
-    ⚠️ {getPrediction()}
-  </div>
-)}
+        <footer className="mt-10 rounded-2xl border border-border bg-card/60 p- text-xs text-muted-foreground">
+          <p className="text-xl font-semibold tracking-wide text-primary">
+            💧 {quote}
+          </p>
+          {getUsage() && (
+            <div className="mt-4 rounded-xl bg-yellow-500/20 border border-yellow-500 p-4 text-yellow-300 font-semibold">
+              💡 {getUsage()}
+            </div>
+          )}
+          {getPrediction() && (
+            <div className="mt-4 rounded-xl bg-yellow-500/20 border border-yellow-500 p-4 text-yellow-300 font-semibold">
+              <p className="text-yellow-400 text-sm font-medium">
+                🔮 Prediction: {getPrediction()}
+              </p>
+            </div>
+          )}
 
-  <p className="mt-4 text-sm text-muted-foreground">
-    This graph visualizes real-time trends in water quality parameters like pH, TDS, and turbidity. 
-AI analyzes these trends to detect anomalies and predict potential safety risks before they occur.
-  </p>
-</div>
-
-
-        <footer className="mt-10 rounded-2xl border border-border bg-card/60 p-5 text-xs text-muted-foreground">
-    <p className="text-xl font-semibold tracking-wide text-primary">💧 {quote}</p>
-         {getUsage() && (
-  <div className="mt-4 rounded-xl bg-yellow-500/20 border border-yellow-500 p-4 text-yellow-300 font-semibold">
-    💡 {getUsage()}
-  </div>
-)}
-        {getPrediction() && (
-  <div className="mt-4 rounded-xl bg-yellow-500/20 border border-yellow-500 p-4 text-yellow-300 font-semibold">
-    <p className="text-yellow-400 text-sm font-medium">
-      🔮 Prediction: {getPrediction()}
-    </p>
-  </div>
-)}
-
-          <div className="mt-1">
-          </div>
+          <div className="mt-1"></div>
         </footer>
       </div>
     </main>
