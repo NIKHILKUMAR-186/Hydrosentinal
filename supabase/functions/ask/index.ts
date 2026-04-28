@@ -208,7 +208,7 @@ Keep tone clear, helpful, and professional.`;
       console.error("AI gateway error:", aiRes.status, t);
       return new Response(JSON.stringify({ error: "AI gateway error" }), {
         status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeaders, "Content-Type": "application/json" }, 
       });
     }
 
